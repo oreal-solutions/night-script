@@ -2,6 +2,7 @@ package com.nightscript;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,6 +18,8 @@ public class App
     private static Scanner reader;
     private static List<Line> lines;
     private static Command command;
+    private static Context context;
+    private static ExpressionSolver solver;
     public static void main( String[] args ) throws FileNotFoundException
     {
         System.out.println( "Welcome to NightScript!" );
@@ -42,7 +45,8 @@ public class App
      */
     private static void handleLine(Line line){
         // Split the line contents into list of words. command = [let, a, =, 4]
-        command = new Command(line);  
+        command = new Command(line);
+        solver = new ExpressionSolver();  
 
         // If command starts with a keyword
         for (KEYWORD key : KEYWORD.values()){
@@ -51,6 +55,15 @@ public class App
             }
         }
         // Execute keyword command
-        Command.KeyExecute(command.keyword, line.lineNumber);
+        if (command.keyword != null){
+            Command.KeyExecute(command, line.lineNumber);
+        }
+        // If command doesn't start with keyword
+        // eg. Updating a variable, a = 34
+        else if (context.doesVariableExist(command.command[0])){
+            List<String> expression = Arrays.asList(line.lineContent.substring(line.lineContent.indexOf("=")+1).split(" "));
+            Value value = solver.solve(expression, line.lineNumber);
+            context.setVariableValue(command.command[0], value);
+        }
     }
 }

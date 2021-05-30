@@ -6,6 +6,7 @@ package com.nightscript;
 public class Command {
     String[] command;
     KEYWORD keyword;
+    String[] expression;
     
     public Command(Line line) {
         this.command = line.lineContent.split(" "); 
@@ -30,8 +31,8 @@ public class Command {
    /**
     * Method to run functions depending on keyword
     */
-    public static void KeyExecute(KEYWORD keyword, int lineNumber) {
-        switch (keyword){
+    public static void KeyExecute(Command command, int lineNumber) {
+        switch (command.keyword){
             case let:
                 //LetStatementExecutor
                 break;
@@ -61,4 +62,6 @@ public class Command {
                 break;
         }
     }
+
+    
 }
