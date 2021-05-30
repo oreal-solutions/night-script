@@ -51,6 +51,6 @@ public class App
             }
         }
         // Execute keyword command
-        Command.KeyExecute(command.keyword);
+        Command.KeyExecute(command.keyword, line.lineNumber);
     }
 }

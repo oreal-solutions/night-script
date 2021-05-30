@@ -30,7 +30,7 @@ public class Command {
    /**
     * Method to run functions depending on keyword
     */
-    public static void KeyExecute(KEYWORD keyword) {
+    public static void KeyExecute(KEYWORD keyword, int lineNumber) {
         switch (keyword){
             case let:
                 //LetStatementExecutor
