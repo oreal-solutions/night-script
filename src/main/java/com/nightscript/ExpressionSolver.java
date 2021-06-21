@@ -2,6 +2,77 @@ package com.nightscript;
 
 import java.util.List;
 
+
+/**
+ * This class implements the operations that can be performed on Values.
+ * 
+ * Binary operations take two Values, the left and the right Value. The left
+ * Value is the one that appears on the left hand side of the operator and the
+ * right Value appears on the right hand side of the operator.
+ */
+class ValueOperations {
+    public Value<?> add(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value<?> subtract(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value<?> divide(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value<?> multiply(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value.Boolean logicalOr(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value.Boolean logicalAnd(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value.Boolean logicalNot(Value<?> value) {
+      return null;
+    }
+  
+    public Value.Boolean isEqualTo(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value.Boolean isLessThan(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value.Boolean isGreaterThan(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value.Boolean isLessThanOrEqualTo(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value.Boolean isGreaterThanOrEqualTo(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value.Boolean is(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value.Boolean isNot(Value<?> left, Value<?> right) {
+      return null;
+    }
+  
+    public Value.String toString(Value<?> value) {
+      return null;
+    }
+  }
+  
+
 /**
  * ExpressionSolver Class to reduce an expression down to a single Value
  * 
