@@ -2,7 +2,7 @@
 //
 // The nightScript team
 
-// A function declaration
+// A function definition
 def timesTwo takes x
   return x * 2
 endDef
@@ -12,7 +12,7 @@ def timesFour takes x
 endDef
 
 // Functions can be passed to other functions
-def runTwice takes x, f
+def runTwice takes x and f
   for i = 0, i < 2, i = i+1
     x = f(x)
   endFor
