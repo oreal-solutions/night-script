@@ -13,32 +13,32 @@ include "nc:math"
 
 struct Vector3 has x, y and z
 
-// Vector with all elements set to zero.
+/// Vector with all elements set to zero.
 final ZERO = Vector3 {x: 0, y: 0, z: 0}
 
-// Unit vector in the X direction. (1, 0, 0)
+/// Unit vector in the X direction. (1, 0, 0)
 final UNIT_X = Vector3 {x: 1, y: 0, z: 0}
 
-// Unit vector facing forward. (1, 0, 0)
+/// Unit vector facing forward. (1, 0, 0)
 final FORWARD = UNIT_X
 
-// Unit vector in the Y direction. (0, 1, 0)
+/// Unit vector in the Y direction. (0, 1, 0)
 final UNIT_Y = Vector3 {x: 0, y: 1, z: 0}
 
-// Unit vector pointing up. (0, 1, 0)
+/// Unit vector pointing up. (0, 1, 0)
 final UP = UNIT_Y
 
-// Unit vector in the z direction. (0, 0, 1)
+/// Unit vector in the z direction. (0, 0, 1)
 final UNIT_Z = Vector3 {x: 0, y: 0, z: 1}
 
-// Unit vector pointing right. (0, 0, 1)
+/// Unit vector pointing right. (0, 0, 1)
 final RIGHT = UNIT_Z
 
 // Unit vector will all elements set to 1.
 final ONE = Vector3 {x: 1, y: 1, z: 1}
 
-// Constructs a new Vector3 that is a clone of the given Vector3.
-def Vector3.copy -> Vector3
+/// Constructs a new Vector3 that is a clone of the given Vector3.
+def Vector3.copy
   return Vector3 {x: x, y: y, z: y}
 endDef
 
@@ -77,7 +77,7 @@ endDef
 def Vector3.cross takes other
 endDef
 
-def Vector3.ceil -> Vector3
+def Vector3.ceil
   return Vector3 {
     x: ceil(x),
     y: ceil(y),
@@ -85,7 +85,7 @@ def Vector3.ceil -> Vector3
   }
 endDef
 
-def Vector3.floor -> Vector3
+def Vector3.floor
   return Vector3 {
     x: floor(x),
     y: floor(y),
@@ -93,7 +93,7 @@ def Vector3.floor -> Vector3
   }
 endDef
 
-def Vector3.round -> Vector3
+def Vector3.round
   return Vector3 {
     x: round(x),
     y: round(y),
@@ -101,7 +101,7 @@ def Vector3.round -> Vector3
   }
 endDef
 
-def Vector3.abs -> Vector3
+def Vector3.abs
   return Vector3 {
     x: abs(x),
     y: abs(y),
