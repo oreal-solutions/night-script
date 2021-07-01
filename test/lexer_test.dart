@@ -117,7 +117,7 @@ final expectedTokensIgnoringStartingIndices = [
   Token(-1, 'number', TokenType.numberKeyword),
   Token(-1, 'string', TokenType.stringKeyword),
   Token(-1, 'list', TokenType.listKeyword),
-  Token(-1, 'map', TokenType.mapKeyWord),
+  Token(-1, 'map', TokenType.mapKeyword),
   Token(-1, 'struct', TokenType.structKeyword),
   Token(-1, 'with', TokenType.withKeyword),
   Token(-1, 'has', TokenType.hasKeyword),
@@ -208,6 +208,8 @@ void main() {
 
       test('Should recognise all tokens', () {
         final tokens = instance!.tonekise(allLexemes);
+
+        expect(tokens, hasLength(expectedTokensIgnoringStartingIndices.length));
         for (var i = 0; i < expectedTokensIgnoringStartingIndices.length; i++) {
           final returnedToken = tokens[i];
           final expectedToken = expectedTokensIgnoringStartingIndices[i];

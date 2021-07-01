@@ -64,7 +64,7 @@ enum TokenType {
   numberKeyword,
   stringKeyword,
   listKeyword,
-  mapKeyWord,
+  mapKeyword,
   structKeyword,
   withKeyword,
   hasKeyword,
