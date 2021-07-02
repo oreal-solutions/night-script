@@ -60,6 +60,7 @@ continue
 &&
 ||
 !
+is!
 
 ==
 !=
@@ -154,6 +155,7 @@ final expectedTokensIgnoringStartingIndices = [
   Token(-1, '&&', TokenType.opAnd),
   Token(-1, '||', TokenType.opOr),
   Token(-1, '!', TokenType.opNot),
+  Token(-1, 'is!', TokenType.opIsNot),
 
   // Relational operators
   Token(-1, '==', TokenType.opEqualTo),

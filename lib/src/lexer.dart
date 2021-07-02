@@ -99,6 +99,7 @@ enum TokenType {
   opAnd,
   opOr,
   opNot,
+  opIsNot,
 
   // Relational Operators
   opEqualTo,
