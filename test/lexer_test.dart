@@ -38,6 +38,8 @@ on
 get
 catch
 throw
+break
+continue
 
 .
 ,
@@ -127,6 +129,8 @@ final expectedTokensIgnoringStartingIndices = [
   Token(-1, 'get', TokenType.getKeyword),
   Token(-1, 'catch', TokenType.catchKeyword),
   Token(-1, 'throw', TokenType.throwKeyword),
+  Token(-1, 'break', TokenType.breakKeyword),
+  Token(-1, 'continue', TokenType.continueKeyword),
 
   // Separators
   Token(-1, '.', TokenType.dot),

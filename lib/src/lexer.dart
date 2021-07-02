@@ -74,6 +74,8 @@ enum TokenType {
   getKeyword,
   catchKeyword,
   throwKeyword,
+  breakKeyword,
+  continueKeyword,
 
   // Separators
   dot,
