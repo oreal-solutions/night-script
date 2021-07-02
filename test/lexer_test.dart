@@ -60,7 +60,6 @@ continue
 &&
 ||
 !
-is!
 
 ==
 !=
@@ -75,6 +74,9 @@ is!
 *=
 /=
 %=
+
+is!
+=>
 
 "myString"
 """my String
@@ -155,7 +157,6 @@ final expectedTokensIgnoringStartingIndices = [
   Token(-1, '&&', TokenType.opAnd),
   Token(-1, '||', TokenType.opOr),
   Token(-1, '!', TokenType.opNot),
-  Token(-1, 'is!', TokenType.opIsNot),
 
   // Relational operators
   Token(-1, '==', TokenType.opEqualTo),
@@ -172,6 +173,9 @@ final expectedTokensIgnoringStartingIndices = [
   Token(-1, '*=', TokenType.opMultiplyAssign),
   Token(-1, '/=', TokenType.opDivideAssign),
   Token(-1, '%=', TokenType.opModulusAssign),
+
+  Token(-1, 'is!', TokenType.opIsNot),
+  Token(-1, '=>', TokenType.opLambda),
 
   // Literals
   Token(-1, '"myString"', TokenType.stringLiteral),

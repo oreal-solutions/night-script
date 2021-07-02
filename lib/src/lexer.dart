@@ -99,7 +99,6 @@ enum TokenType {
   opAnd,
   opOr,
   opNot,
-  opIsNot,
 
   // Relational Operators
   opEqualTo,
@@ -116,6 +115,10 @@ enum TokenType {
   opMultiplyAssign,
   opDivideAssign,
   opModulusAssign,
+
+  // Others operators
+  opIsNot,
+  opLambda,
 
   // Literals
   stringLiteral, //single line or multi line string with quotes
