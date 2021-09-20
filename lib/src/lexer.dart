@@ -134,7 +134,7 @@ abstract class Lexer {
   ///
   /// A lexeme that cannot be matched to any token is treated as an identifier
   /// even if it is not a valid identifier according to the rules of night
-  /// script. The following stages of parsing will apply the rules. In this
+  /// script. The next stages of parsing will apply the rules. In this
   /// stage we are just tokenisisng.
   List<Token> tonekise(String source);
 
@@ -144,6 +144,84 @@ abstract class Lexer {
 class _Lexer implements Lexer {
   @override
   List<Token> tonekise(String source) {
-    return [];
+    return tokeniseRecursively(0, source);
+  }
+
+  List<Token> tokeniseRecursively(int startIndexOffset, String leg) {
+    if (leg.trim().isEmpty) return [];
+
+    Token? foundToken;
+    var foundTokenStartIndexInLeg = -1;
+    var foundTokenEndIndexInLeg = -1;
+    for (var lexemeMatcher in _lexemeMatchers) {
+      final foundLexeme = lexemeMatcher.matcher.firstMatch(leg);
+      if (foundLexeme != null) {
+        foundTokenStartIndexInLeg = foundLexeme.start;
+        foundTokenEndIndexInLeg = foundLexeme.end;
+
+        foundToken = Token(
+          foundTokenStartIndexInLeg + startIndexOffset,
+          leg.substring(foundTokenStartIndexInLeg, foundTokenEndIndexInLeg),
+          lexemeMatcher.tokenType,
+        );
+
+        break;
+      }
+    }
+
+    if (foundToken == null) {
+      // The string is not empty but no lexeme matcher matches.
+      throw ArgumentError('The given source string is not empty but no matcher'
+          ' matches the lexemes it has.');
+    }
+
+    final leftLeg = leg.substring(0, foundTokenStartIndexInLeg);
+    final doesNotHaveRightLeg = foundTokenEndIndexInLeg == leg.length;
+    final rightLeg =
+        doesNotHaveRightLeg ? '' : leg.substring(foundTokenEndIndexInLeg);
+
+    return [
+      ...tokeniseRecursively(startIndexOffset, leftLeg),
+      foundToken,
+      ...tokeniseRecursively(foundTokenEndIndexInLeg, rightLeg)
+    ];
   }
 }
+
+class _LexemeMatcher {
+  final TokenType tokenType;
+  final RegExp matcher;
+  _LexemeMatcher({required this.tokenType, required this.matcher});
+}
+
+/// A list of [_LexemeMatcher]s.
+///
+/// The matchers should be arranged such that the first lexeme matchers are
+/// compound machers, i.e the lexemes they match are made up of other lexemes.
+///
+/// For example the 'is!' lexeme is made up of the 'is' and the '!' lexemes. Therefore,
+/// its matcher in this list should come before the 'is' and '!' matchers.
+///
+/// Taking this into account, comments and string matchers should come before
+/// all other types of matchers.
+///
+/// The last matcher in this list should be the identifer matcher so that it
+/// can match anything that is unmatched as an identifier.
+final _lexemeMatchers = <_LexemeMatcher>[
+  _LexemeMatcher(
+    tokenType: TokenType.blockComment,
+    matcher: RegExp(r'///.*'),
+  ),
+  _LexemeMatcher(
+    tokenType: TokenType.lineComment,
+    matcher: RegExp(r'//.*'),
+  ),
+  _LexemeMatcher(
+    tokenType: TokenType.stringLiteral,
+    matcher: RegExp(r'""".*"""'),
+  ),
+  _LexemeMatcher(
+    tokenType: TokenType.stringLiteral,
+    matcher: RegExp(r'""".*"""'),
+  ),
+];
