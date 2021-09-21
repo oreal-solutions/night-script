@@ -1,14 +1,9 @@
 type
 any
 
-int    ---
-          |
-           -----> num
-          |
-double ---
+int (i.e 64 bit integers)
+num (i.e double)
 
-string
+string (i.e UTF-16 char sequence)
 list
 map
-
-TODO: remove num
