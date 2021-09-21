@@ -7,3 +7,5 @@ num (i.e double)
 string (i.e UTF-16 char sequence)
 list
 map
+stream
+enum

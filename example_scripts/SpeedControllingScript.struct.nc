@@ -14,7 +14,7 @@
 //    SPEED_FACTOR: 0.4        // Error
 // }
 //
-// .struct.nc files cannot have struct definitions. i.e structs
+// .struct.nc files cannot have struct and enum definitions. i.e structs
 // cannot be nested.
 
 final SPEED_FACTOR = 0.3
