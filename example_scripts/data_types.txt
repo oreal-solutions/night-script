@@ -1,0 +1,14 @@
+type
+any
+
+int    ---
+          |
+           -----> num
+          |
+double ---
+
+string
+list
+map
+
+TODO: remove num

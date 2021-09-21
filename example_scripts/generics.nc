@@ -10,11 +10,11 @@ def newEmptyCollection<T is Comparable> -> CustomCollection<T> {
   _buffer: newEmptyList<T>
 }
 
-def CustomCollection.add item {
+def CustomCollection.add item: T -> {
   _buffer.add item
 }
 
-def CustomCollection.removeType of: type {
+def CustomCollection.removeType of: type -> {
   _buffer.removeWhere item -> item is of
 }
 

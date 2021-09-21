@@ -15,6 +15,6 @@ def zeroPoint {
   -> Point {x: 0, y: 0}
 }
 
-def quadPoint takes w {
+def quadPoint takes w: num -> {
   -> Point {x: w, y: w}
 }

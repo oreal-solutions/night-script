@@ -7,8 +7,8 @@
 include "nc:math"
 include "nc:collections"
 
-def sumOfDoubleSqrtsOf numbers {
-  def doubleSqrtOf x: num {
+def sumOfDoubleSqrtsOf numbers -> {
+  def doubleSqrtOf x: num -> {
     -> 2 * sqrt x
   }
 
