@@ -11,7 +11,7 @@
 
 include "nc:math"
 
-struct Vector3 has x, y and z
+struct Vector3 has x: num, y: num and z: num
 
 /// Vector with all elements set to zero.
 final ZERO = Vector3 {x: 0, y: 0, z: 0}
@@ -38,106 +38,87 @@ final RIGHT = UNIT_Z
 final ONE = Vector3 {x: 1, y: 1, z: 1}
 
 /// Constructs a new Vector3 that is a clone of the given Vector3.
-def Vector3.copy
-  return Vector3 {x: x, y: y, z: y}
-endDef
+def Vector3.copy -> Vector3 {x: x, y: y, z: y}
 
-def Vector3.operator+ takes other
-  return Vector3 {
+def Vector3.operator+ takes other: Vector3
+  -> Vector3 {
     x: x+other.x,
     y: y+other.y,
     z: z+other.z,
   }
-endDef
 
-def Vector3.operator- takes other
-  return Vector3 {
+def Vector3.operator- takes other: Vector3
+  -> Vector3 {
     x: x-other.x,
     y: y-other.y,
     z: z-other.z,
   }
-endDef
 
-def Vector3.operator* takes factor
-  return Vector3 {
+def Vector3.operator* takes factor: double
+  -> Vector3 {
     x: x*factor,
     y: y*factor,
     z: z*factor,
   }
-endDef
 
-def Vector3.operator== takes other
-  if other is! Vector3 return false;
-  return x == other.x && y == other.y && z = other.z
-endDef
+def Vector3.operator== takes other: Vector3
+  -> x == other.x && y == other.y && z = other.z
 
-def Vector3.dot takes other
-endDef
+def Vector3.dot takes other {}
 
-def Vector3.cross takes other
-endDef
+def Vector3.cross takes other {}
 
 def Vector3.ceil
-  return Vector3 {
+  -> Vector3 {
     x: ceil(x),
     y: ceil(y),
     z: ceil(z),
   }
-endDef
 
 def Vector3.floor
-  return Vector3 {
+  -> Vector3 {
     x: floor(x),
     y: floor(y),
     z: floor(z),
   }
-endDef
 
 def Vector3.round
-  return Vector3 {
+  -> Vector3 {
     x: round(x),
     y: round(y),
     z: round(z),
   }
-endDef
 
 def Vector3.abs
-  return Vector3 {
+  -> Vector3 {
     x: abs(x),
     y: abs(y),
     z: abs(z),
   }
-endDef
 
-def Vector3.toThePowerOf power
-  return Vector3 {
+def Vector3.toThePowerOf power: num
+  -> Vector3 {
     x: pow(x, power),
     y: pow(y, power),
     z: pow(z, power),
   }
-endDef
 
-def Vector3.distanceFrom other
+def Vector3.distanceFrom other: Vector3 {
   throw "Unimplemented method"
-endDef
+}
 
 def Vector3.lengthSquared
-  return data.dot data
-endDef
+  -> data.dot data
 
 def Vector3.length
-  return sqrt(lengthSquared)
-endDef
+  -> sqrt(lengthSquared)
 
 def Vector3.fastLength
-  return sqrt(lengthSquared)
-endDef
+  -> sqrt(lengthSquared)
 
 def Vector3.normalise
-  return data * 1/length
-endDef
+  -> data * 1/length
 
 def Vector3.toArray
-  return [x, y, z]
-endDef
+  -> [x, y, z]
 

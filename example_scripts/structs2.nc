@@ -2,16 +2,16 @@
 //
 // the nightScript team
 
-struct Point has x, y
+struct Point has x: num, y: num
 
-def Point.isInsideUnitCircle
-  return x * x + y * y <= 1
-endDef
+def Point.isInsideUnitCircle {
+  -> x * x + y * y <= 1
+}
 
-def zeroPoint
-  return Point {x: 0, y: 0}
-endDef
+def zeroPoint {
+  -> Point {x: 0, y: 0}
+}
 
-def quadPoint takes w
-  return Point {x: w, y: w}
-endDef
+def quadPoint takes w {
+  -> Point {x: w, y: w}
+}

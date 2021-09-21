@@ -4,34 +4,36 @@
 
 include "nc:collections"
 
-def isEven takes x
+def isEven takes x: num -> boolean {
   // An if-else statement 
   if x % 2 == 0
-    return true
+    -> true
   else
     // else can be use an endIf
-    return false
-endDef
+    -> false
+}
 
-def getEvenNumbersFrom numbers
-  let evenNumbers = emptyList
+
+def evenNumbersIn numbers: Iterable<num> -> Iterable<num> {
+  let evenNumbers = newEmptyList
 
   // A forEach loop
-  forEach i in numbers
+  for i in numbers {
     // A single line if statement
-    if isEven i
-      evenNumbers.add i
-    endIf
-  endForEach
+    if isEven i -> evenNumbers.add i
+  }
 
-  return evenNumbers
-endDef
+  -> evenNumbers
+}
+
 
 // Main
-// Note that i => i is a lambda function that maps i to itself.
-let numbers = ArrayList.generate 10, i => i
-print getEvenNumbersFrom numbers
+def main {
+  // Note that i -> i is a lambda function that maps i to itself.
+  let numbers = ArrayList.generate 10, i -> i
+  print evenNumbersIn numbers
 
-// Some languages have the ? operator, night script uses if else for that
-let x = 5 if numbers.length == 10 else 20
-let a = true if numbers.length > 5
+  // Some languages have the ? operator, night script uses if else for that
+  let x = 5 if numbers.length == 10 else 20
+  let a = true if numbers.length > 5
+}
