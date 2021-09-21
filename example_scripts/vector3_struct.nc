@@ -4,14 +4,17 @@
 //
 // The nightScript team
 
-// NB: 'and' can be used instead of the command in struct definitions
-//     'takes' is optional in function definitions.
+// NB: 'takes' is optional in function definitions.
 //     The default toString method for structs prints the values of the struct
 //     fields using their toString methods.
 
 include "nc:math"
 
-struct Vector3 has x: num, y: num and z: num
+struct Vector3 {
+  x: num,
+  y: num,
+  z: num,
+}
 
 /// Vector with all elements set to zero.
 final ZERO = Vector3 {x: 0, y: 0, z: 0}

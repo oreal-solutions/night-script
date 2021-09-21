@@ -2,7 +2,10 @@
 //
 // the nightScript team
 
-struct Point has x: num, y: num
+struct Point {
+  x: num,
+  y: num,
+}
 
 def Point.isInsideUnitCircle {
   -> x * x + y * y <= 1

@@ -2,7 +2,10 @@
 /// 
 /// The nightScript Team.
 
-struct Rectangle has width: num and height: num
+struct Rectangle {
+  width: num,
+  height: num,
+}
 
 def Rectangle.area -> width*height
 

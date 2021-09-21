@@ -5,7 +5,7 @@
 // General rule: A struct can only mixin with one other struct.
 
 // Empty struct
-struct Item
+struct Item {}
 
 // Method on Item struct
 def Item.use {
@@ -13,7 +13,9 @@ def Item.use {
 }
 
 // Structs can mixin with other structs
-struct Chest with Item has contents: List
+struct Chest with Item {
+  contents: List
+}
 
 // Override the use method for Chest item
 def Chest.use {
@@ -21,7 +23,7 @@ def Chest.use {
   print "$data has ${contents.length} items."
 }
 
-struct Sword with Item
+struct Sword with Item {}
 
 def Sword.damage {
   -> 5
@@ -31,7 +33,7 @@ def Sword.use {
   print "$data dealt $damage damage."
 }
 
-struct DiamondSword with Sword
+struct DiamondSword with Sword {}
 def DiamondSword.damage {
   -> 50
 }
