@@ -34,6 +34,10 @@ def main {
   print evenNumbersIn numbers
 
   // Some languages have the ? operator, night script uses if else for that
-  let x = 5 if numbers.length == 10 else 20
+  let x = {
+    if numbers.length == 10 -> 5
+    else -> 20
+  }
   let a = true if numbers.length > 5
+  let a = numbers.length > 5
 }
