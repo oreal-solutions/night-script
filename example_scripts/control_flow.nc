@@ -38,6 +38,5 @@ def main {
     if numbers.length == 10 -> 5
     else -> 20
   }
-  let a = true if numbers.length > 5
   let a = numbers.length > 5
 }
