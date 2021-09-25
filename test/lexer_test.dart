@@ -14,12 +14,17 @@ void main() {
       });
 
       test('Should capture the correct starting indices for tokens', () {
-        final source = ' 56>=\n"myString"';
+        final source = ' 56>=\n"myString"\ntype\nany\n';
         final expectedTokens = [
           Token(1, '56', TokenType.integerLiteral),
           Token(3, '>=', TokenType.opGreaterThanOrEqualTo),
           Token(5, '\n', TokenType.newline),
           Token(6, '"myString"', TokenType.stringLiteral),
+          Token(16, '\n', TokenType.newline),
+          Token(17, 'type', TokenType.typeKeyword),
+          Token(21, '\n', TokenType.newline),
+          Token(22, 'any', TokenType.anyKeyword),
+          Token(25, '\n', TokenType.newline),
         ];
 
         expect(instance.tokenise(source), expectedTokens);

@@ -186,7 +186,7 @@ class _Lexer implements Lexer {
     return [
       ...tokeniseRecursively(startIndexOffset, leftLeg),
       foundToken,
-      ...tokeniseRecursively(foundTokenEndIndexInLeg, rightLeg)
+      ...tokeniseRecursively(foundToken.endIndex, rightLeg)
     ];
   }
 
