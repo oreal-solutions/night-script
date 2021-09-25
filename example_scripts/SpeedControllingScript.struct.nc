@@ -19,7 +19,7 @@
 
 final SPEED_FACTOR = 0.3
 final color: Color
-speed = 0
+let speed = 0
 
 def onDraw delta: num -> {
   speed *= SPEED_FACTOR * delta
