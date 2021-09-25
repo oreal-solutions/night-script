@@ -3,6 +3,7 @@ any
 
 int (i.e 64 bit integers)
 num (i.e double)
+bool
 
 string (i.e UTF-16 char sequence)
 list

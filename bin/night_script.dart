@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:night_script/night_script.dart' as night_script;
 
-void main(List<String> arguments) {
-  final test = '"""hello 3""" """hello 4"""';
-  final match = RegExp(r'""".*"""').firstMatch(test);
-  print(test.substring(match!.start, match.end));
+void main(List<String> args) {
+  final lexer = night_script.Lexer();
+  final source = File(args.first).readAsStringSync();
+  print(lexer.tokenise(source));
 }

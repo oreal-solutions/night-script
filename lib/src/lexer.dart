@@ -1,168 +1,169 @@
 part of night_script;
 
-/// A Token is a unit of meaning in a source file.
-///
-/// There are 5 different types of tokens in nightScript:
-/// 1. Identifier: Names the programmer chooses, i.e tokens that cannot be
-///    identified as the other tokens
-/// 2. Keyword: Any night script keyword
-/// 3. Separator: Punctuation characters used for separating regions of code
-/// 4. Operator: Symbols that operate on arguments and produce results
-/// 5. Literal: Program literals
-/// 6. Comment: Line comments and block comments
-class Token {
-  /// This is a zero based index of where the first character of the token is in
-  /// in the file.
-  final int startIndex;
-
-  /// The string this token token was passed from in the source file.
-  final String data;
-
-  final TokenType type;
-
-  Token(this.startIndex, this.data, this.type);
-
-  @override
-  bool operator ==(other) {
-    return other is Token &&
-        other.startIndex == startIndex &&
-        other.data == data &&
-        other.type == type;
-  }
-
-  @override
-  int get hashCode => startIndex.hashCode ^ data.hashCode ^ type.hashCode;
-
-  @override
-  String toString() => '($type, $data, @$startIndex)';
-}
-
-enum TokenType {
-  identifier,
-
-  // Keywords
-  includeKeyword,
-  asKeyword,
-  defKeyword,
-  endDefKeyword,
-  inKeyword,
-  ifKeyword,
-  elseKeyword,
-  endIfKeyword,
-  forEachKeyword,
-  endForEachKeyword,
-  takesKeyword,
-  andKeyword,
-  returnKeyword,
-  trueKeyword,
-  falseKeyword,
-  letKeyword,
-  finalKeyword,
-  functionKeyword,
-  booleanKeyword,
-  byteKeyword,
-  numberKeyword,
-  stringKeyword,
-  listKeyword,
-  mapKeyword,
-  structKeyword,
-  withKeyword,
-  hasKeyword,
-  dataKeyword,
-  tryKeyword,
-  onKeyword,
-  getKeyword,
-  catchKeyword,
-  throwKeyword,
-  breakKeyword,
-  continueKeyword,
-
-  // Separators
-  dot,
-  comma,
-  colon,
-  openParenthesis,
-  closeParenthesis,
-  openSquareBracket,
-  closeSquareBracket,
-
-  // Arithmatic operators
-  opAdd,
-  opSubtract,
-  opMultiply,
-  opDivide,
-  opModulus,
-  opIncrement,
-  opDecrement,
-
-  // Logical Operators
-  opAnd,
-  opOr,
-  opNot,
-
-  // Relational Operators
-  opEqualTo,
-  opNotEqualTo,
-  opLessThan,
-  opGreaterThan,
-  opLessThanOrEqualTo,
-  opGreaterThanOrEqualTo,
-
-  // Assignment operators
-  opAssign,
-  opAddAssign,
-  opSubtractAssign,
-  opMultiplyAssign,
-  opDivideAssign,
-  opModulusAssign,
-
-  // Others operators
-  opIsNot,
-  opLambda,
-
-  // Literals
-  stringLiteral, //single line or multi line string with quotes
-  numberLiteral,
-
-  // Comments
-  lineComment,
-  blockComment,
-}
-
 abstract class Lexer {
   /// Tokenises the given source.
   ///
-  /// A lexeme that cannot be matched to any token is treated as an identifier
-  /// even if it is not a valid identifier according to the rules of night
-  /// script. The next stages of parsing will apply the rules. In this
-  /// stage we are just tokenisisng.
-  List<Token> tonekise(String source);
+  /// A lexeme that cannot be matched to any token will be treated as an unknown
+  /// token and will be logged in [unknownSymbols].
+  List<Token> tokenise(String source);
+
+  /// A list of all the symbols not matched to a recognised token.
+  List<Token> get unknownSymbols;
 
   factory Lexer() = _Lexer;
 }
 
 class _Lexer implements Lexer {
   @override
-  List<Token> tonekise(String source) {
-    return tokeniseRecursively(0, source);
+  List<Token> unknownSymbols = [];
+
+  @override
+  List<Token> tokenise(String source) {
+    var stringTypeWeCurrentlyIn = _CurrentStringType.NONE;
+    var commentTypeWeCurrentlyIn = _CurrentCommentType.NONE;
+    var stagedCharacters = StringBuffer();
+    final out = <Token>[];
+
+    int startIndexOfNextToken() {
+      if (out.isEmpty) return 0;
+      return out.last.endIndex;
+    }
+
+    void terminateStagedCharactersAsStringLiteral() {
+      stringTypeWeCurrentlyIn = _CurrentStringType.NONE;
+      out.add(
+        Token(startIndexOfNextToken(), stagedCharacters.toString(),
+            TokenType.stringLiteral),
+      );
+
+      stagedCharacters.clear();
+    }
+
+    void tokeniseStagedCharactersAndClearThem(List<Token> out) {
+      out.addAll(tokeniseRecursively(
+          startIndexOfNextToken(), stagedCharacters.toString()));
+      stagedCharacters.clear();
+    }
+
+    void removeLastStagedCharacter() {
+      final write =
+          stagedCharacters.toString().substring(0, stagedCharacters.length - 1);
+      stagedCharacters.clear();
+      stagedCharacters.write(write);
+    }
+
+    for (var iii = 0; iii < source.length; iii++) {
+      final char = source[iii];
+      stagedCharacters.write(char);
+
+      // Check for string and comment termination
+      if (stringTypeWeCurrentlyIn == _CurrentStringType.SINGLE_LINE) {
+        if (char == '\n') {
+          stringTypeWeCurrentlyIn = _CurrentStringType.NONE;
+        } else if (char == '"') {
+          // String is being terminated
+          terminateStagedCharactersAsStringLiteral();
+        }
+      } else if (stringTypeWeCurrentlyIn == _CurrentStringType.MULTILINE) {
+        if (char == '"' &&
+            source.hasNextTwoCharsAfterIndex(iii) &&
+            source.nextTwoCharsAfterIndexEqual('""', iii)) {
+          // Multiline string is being terminated
+          stagedCharacters.write(source.nextTwoCharsAfterIndex(iii));
+          iii += 2; // Skip the next two characters
+          terminateStagedCharactersAsStringLiteral();
+        }
+      } else if (commentTypeWeCurrentlyIn != _CurrentCommentType.NONE) {
+        if (char == '\n' || source.weHaveReachedLastCharacterInSource(iii)) {
+          if (char == '\n') removeLastStagedCharacter();
+
+          // Comment is being terminated
+          out.add(
+            Token(
+              startIndexOfNextToken(),
+              stagedCharacters.toString(),
+              commentTypeWeCurrentlyIn ==
+                      _CurrentCommentType.SINGLE_LINE_COMMENT
+                  ? TokenType.lineComment
+                  : TokenType.docComment,
+            ),
+          );
+          commentTypeWeCurrentlyIn = _CurrentCommentType.NONE;
+          stagedCharacters.clear();
+
+          if (char == '\n') stagedCharacters.write('\n');
+        }
+      }
+
+      // Check for string and comment beginning
+      else if (char == '"') {
+        if (source.hasNextTwoCharsAfterIndex(iii) &&
+            source.nextTwoCharsAfterIndexEqual('""', iii)) {
+          // Beginning of multiline string
+          removeLastStagedCharacter();
+          tokeniseStagedCharactersAndClearThem(out);
+          stagedCharacters.write(char);
+          stringTypeWeCurrentlyIn = _CurrentStringType.MULTILINE;
+        } else {
+          // Beginning of single line string
+          removeLastStagedCharacter();
+          tokeniseStagedCharactersAndClearThem(out);
+          stagedCharacters.write(char);
+          stringTypeWeCurrentlyIn = _CurrentStringType.SINGLE_LINE;
+        }
+      } else if (char == '/') {
+        if (source.hasNextTwoCharsAfterIndex(iii) &&
+            source.nextTwoCharsAfterIndexEqual('//', iii)) {
+          // Beginning of doc comment
+          removeLastStagedCharacter();
+          tokeniseStagedCharactersAndClearThem(out);
+          commentTypeWeCurrentlyIn = _CurrentCommentType.MULTILINE_COMMENT;
+          stagedCharacters.write(char + source.nextTwoCharsAfterIndex(iii));
+          iii += 2; // Skip the next two characters
+        } else if (source.hasNextCharAfterIndex(iii) &&
+            source.nextCharAfterIndexEquals('/', iii)) {
+          // Beginning of line comment
+          removeLastStagedCharacter();
+          tokeniseStagedCharactersAndClearThem(out);
+          commentTypeWeCurrentlyIn = _CurrentCommentType.SINGLE_LINE_COMMENT;
+          stagedCharacters.write(char + source.nextCharAfterIndex(iii));
+          iii += 1; // Skip next character
+        }
+      }
+    }
+
+    tokeniseStagedCharactersAndClearThem(out);
+    return out;
   }
 
   List<Token> tokeniseRecursively(int startIndexOffset, String leg) {
-    if (leg.trim().isEmpty) return [];
-
     Token? foundToken;
     var foundTokenStartIndexInLeg = -1;
     var foundTokenEndIndexInLeg = -1;
-    for (var lexemeMatcher in _lexemeMatchers) {
-      final foundLexeme = lexemeMatcher.matcher.firstMatch(leg);
+    for (var lexemeMatcher in _lexemeMatchers.entries) {
+      final matcher = lexemeMatcher.key;
+      var tokenType = lexemeMatcher.value;
+
+      final foundLexeme = matcher.firstMatch(leg);
       if (foundLexeme != null) {
         foundTokenStartIndexInLeg = foundLexeme.start;
         foundTokenEndIndexInLeg = foundLexeme.end;
+        final tokenData =
+            leg.substring(foundTokenStartIndexInLeg, foundTokenEndIndexInLeg);
+
+        // Keywords will be matched as identifiers because we have not found a way
+        // to match them separately. So we need to just check every
+        // identifier token and if it's a keyword, we mark it as a keyword.
+        // TODO(Batandwa): Keywords should have their own matchers rather than leaning on identifiers
+        if (tokenType == TokenType.identifier) {
+          final retype = _keywordTokens[tokenData];
+          if (retype != null) tokenType = retype;
+        }
 
         foundToken = Token(
           foundTokenStartIndexInLeg + startIndexOffset,
-          leg.substring(foundTokenStartIndexInLeg, foundTokenEndIndexInLeg),
-          lexemeMatcher.tokenType,
+          tokenData,
+          tokenType,
         );
 
         break;
@@ -170,9 +171,11 @@ class _Lexer implements Lexer {
     }
 
     if (foundToken == null) {
-      // The string is not empty but no lexeme matcher matches.
-      throw ArgumentError('The given source string is not empty but no matcher'
-          ' matches the lexemes it has.');
+      // The leg is not empty but no lexeme matcher matches. So we match
+      // the symbols character by character, which should be faster than using
+      // regexp.
+      return tokeniseOneAndTwoCharacterLexemes(
+          startIndexOffset, leg, unknownSymbols);
     }
 
     final leftLeg = leg.substring(0, foundTokenStartIndexInLeg);
@@ -186,42 +189,93 @@ class _Lexer implements Lexer {
       ...tokeniseRecursively(foundTokenEndIndexInLeg, rightLeg)
     ];
   }
+
+  List<Token> tokeniseOneAndTwoCharacterLexemes(
+      int startIndexOffset, String leg, List<Token> unknownSymbolsOut) {
+    final out = <Token>[];
+    for (var iii = 0; iii < leg.length; iii++) {
+      final char = leg[iii];
+      if (char == ' ') continue;
+
+      var matchStartIndex = -1;
+      MapEntry<String, TokenType>? match;
+
+      if (leg.hasNextCharAfterIndex(iii)) {
+        final nextChar = leg.nextCharAfterIndex(iii);
+        if (nextChar != ' ') {
+          final test = char + nextChar;
+          for (var twoCharacterToken in _twoCharacterTokens.entries) {
+            if (twoCharacterToken.key == test) {
+              match = twoCharacterToken;
+              matchStartIndex = iii + startIndexOffset;
+              iii += 1;
+              break;
+            }
+          }
+        }
+      }
+
+      if (match == null) {
+        // Check one character tokens
+        for (var oneCharacterToken in _oneCharacterTokens.entries) {
+          if (oneCharacterToken.key == char) {
+            matchStartIndex = iii + startIndexOffset;
+            match = oneCharacterToken;
+            break;
+          }
+        }
+      }
+
+      if (match == null) {
+        unknownSymbolsOut
+            .add(Token(startIndexOffset + iii, char, TokenType.unknown));
+      } else {
+        out.add(Token(matchStartIndex, match.key, match.value));
+      }
+    }
+
+    return out;
+  }
 }
 
-class _LexemeMatcher {
-  final TokenType tokenType;
-  final RegExp matcher;
-  _LexemeMatcher({required this.tokenType, required this.matcher});
+enum _CurrentStringType {
+  SINGLE_LINE,
+  MULTILINE,
+  NONE,
 }
 
-/// A list of [_LexemeMatcher]s.
-///
-/// The matchers should be arranged such that the first lexeme matchers are
-/// compound machers, i.e the lexemes they match are made up of other lexemes.
-///
-/// For example the 'is!' lexeme is made up of the 'is' and the '!' lexemes. Therefore,
-/// its matcher in this list should come before the 'is' and '!' matchers.
-///
-/// Taking this into account, comments and string matchers should come before
-/// all other types of matchers.
-///
-/// The last matcher in this list should be the identifer matcher so that it
-/// can match anything that is unmatched as an identifier.
-final _lexemeMatchers = <_LexemeMatcher>[
-  _LexemeMatcher(
-    tokenType: TokenType.blockComment,
-    matcher: RegExp(r'///.*'),
-  ),
-  _LexemeMatcher(
-    tokenType: TokenType.lineComment,
-    matcher: RegExp(r'//.*'),
-  ),
-  _LexemeMatcher(
-    tokenType: TokenType.stringLiteral,
-    matcher: RegExp(r'""".*"""'),
-  ),
-  _LexemeMatcher(
-    tokenType: TokenType.stringLiteral,
-    matcher: RegExp(r'""".*"""'),
-  ),
-];
+enum _CurrentCommentType {
+  SINGLE_LINE_COMMENT,
+  MULTILINE_COMMENT,
+  NONE,
+}
+
+extension _SourceStringExtension on String {
+  String nextTwoCharsAfterIndex(int index) {
+    return this[index + 1] + this[index + 2];
+  }
+
+  bool nextTwoCharsAfterIndexEqual(String equal, int index) {
+    return this[index + 1] == equal[0] && this[index + 2] == equal[1];
+  }
+
+  bool hasNextTwoCharsAfterIndex(int index) {
+    return index + 2 < length;
+  }
+
+  String nextCharAfterIndex(int index) {
+    return this[index + 1];
+  }
+
+  bool nextCharAfterIndexEquals(String equal, int index) {
+    return this[index + 1] == equal;
+  }
+
+  bool hasNextCharAfterIndex(int index) {
+    return index + 1 < length;
+  }
+
+  bool weHaveReachedLastCharacterInSource(int index) {
+    return index == length - 1;
+  }
+}

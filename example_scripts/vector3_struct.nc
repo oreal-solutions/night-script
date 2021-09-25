@@ -57,7 +57,7 @@ def Vector3.operator- takes other: Vector3
     z: z-other.z,
   }
 
-def Vector3.operator* takes factor: double
+def Vector3.operator* takes factor: num
   -> Vector3 {
     x: x*factor,
     y: y*factor,

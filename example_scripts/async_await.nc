@@ -36,7 +36,7 @@ def getFuture -> future<string> {
   }
 
   run
-  return fut
+  -> fut
 }
 
 async def main {
