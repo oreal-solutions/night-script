@@ -179,9 +179,7 @@ class _Lexer implements Lexer {
     }
 
     final leftLeg = leg.substring(0, foundTokenStartIndexInLeg);
-    final doesNotHaveRightLeg = foundTokenEndIndexInLeg == leg.length;
-    final rightLeg =
-        doesNotHaveRightLeg ? '' : leg.substring(foundTokenEndIndexInLeg);
+    final rightLeg = leg.substring(foundTokenEndIndexInLeg);
 
     return [
       ...tokeniseRecursively(startIndexOffset, leftLeg),
