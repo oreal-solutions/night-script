@@ -1,6 +1,6 @@
 part of night_script;
 
-abstract class Lexer {
+abstract class Tokeniser {
   /// Tokenises the given source.
   ///
   /// A lexeme that cannot be matched to any token will be treated as an unknown
@@ -10,10 +10,10 @@ abstract class Lexer {
   /// A list of all the symbols not matched to a recognised token.
   List<Token> get unknownSymbols;
 
-  factory Lexer() = _Lexer;
+  factory Tokeniser() = _Tokeniser;
 }
 
-class _Lexer implements Lexer {
+class _Tokeniser implements Tokeniser {
   @override
   List<Token> unknownSymbols = [];
 

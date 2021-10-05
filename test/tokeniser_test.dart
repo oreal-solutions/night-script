@@ -2,11 +2,11 @@ import 'package:night_script/night_script.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Lexer Test', () {
+  group('Tokeniser Test', () {
     group('tokenise(source)', () {
-      late Lexer instance;
+      late Tokeniser instance;
       setUp(() {
-        instance = Lexer();
+        instance = Tokeniser();
       });
 
       test('Should return an empty list when given an empty source', () {
