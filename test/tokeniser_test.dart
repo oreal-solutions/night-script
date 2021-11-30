@@ -31,10 +31,10 @@ void main() {
       });
 
       test('Should tokenise keywords and symbols literally', () {
-        final source = 'def ==';
+        final source = 'func ==';
         final expectedTokens = [
-          Token(0, 'def', TokenType.defKeyword),
-          Token(4, '==', TokenType.opEqualTo),
+          Token(0, 'func', TokenType.funcKeyword),
+          Token(5, '==', TokenType.opEqualTo),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -98,11 +98,11 @@ void main() {
       });
 
       test('Should terminate comments by newline and EOF', () {
-        final source = '//abc\n//def';
+        final source = '//abc\n//func';
         final expectedTokens = [
           Token(0, '//abc', TokenType.lineComment),
           Token(5, '\n', TokenType.newline),
-          Token(6, '//def', TokenType.lineComment),
+          Token(6, '//func', TokenType.lineComment),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
