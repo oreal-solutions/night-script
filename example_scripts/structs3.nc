@@ -7,15 +7,15 @@ struct Rectangle {
   height: num,
 }
 
-def Rectangle.area -> width*height
+getter Rectangle.area => width*height
 
-def main {
+func main() {
   // Inititalise a new Rectangle object
-  let r = Rectangle {
+  final r = Rectangle {
     width: 20,
     height: 10
   }
 
   // Return value is 20*10 = 200
-  -> r.area
+  return r.area
 }

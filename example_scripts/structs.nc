@@ -8,8 +8,8 @@
 struct Item {}
 
 // Method on Item struct
-def Item.use {
-  throw "Implement use method for ${typeOf data} struct"
+func Item.use() {
+  throw("Implement use method for ${typeOf data} struct")
 }
 
 // Structs can mixin with other structs
@@ -18,28 +18,28 @@ struct Chest with Item {
 }
 
 // Override the use method for Chest item
-def Chest.use {
+func Chest.use() {
   // data is synonymous to the 'this' keyword found in most programming languages
-  print "$data has ${contents.length} items."
+  print("$data has ${contents.length} items.")
 }
 
 struct Sword with Item {}
 
-def Sword.damage {
-  -> 5
+getter Sword.damage {
+  return 5
 }
 
-def Sword.use {
-  print "$data dealt $damage damage."
+func Sword.use() {
+  print("$data dealt $damage damage.")
 }
 
 struct DiamondSword with Sword {}
-def DiamondSword.damage {
-  -> 50
+getter DiamondSword.damage {
+  return 50
 }
 
 
-def main {
+func main() {
   // Create a new struct
   let chest = Chest {
     contents: [

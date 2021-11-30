@@ -7,12 +7,12 @@ enum Mode {
   DARK,
 }
 
-def main {
+func main() {
   // [Mode.LIGHT, Mode.DARK]
-  print Mode.values
+  print(Mode.values)
 
-  def Mode.toInt -> Mode.values.indexOf this
+  func Mode.toInt() => Mode.values.indexOf(this)
 
   // 0 1
-  print Mode.LIGHT.toInt + " " + Mode.DARK.toInt
+  print(Mode.LIGHT.toInt() + " " + Mode.DARK.toInt())
 }

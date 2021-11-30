@@ -4,29 +4,27 @@
 
 // Watch the use of the command and 'and'.
 
-def throwString {
+func throwString() {
   throw "Throw What?"
 }
 
-def throwNumber {
+func throwNumber() {
   throw 42
 }
 
-def main {
+func main() {
   try {
-    throwString
-  } on string get thrownString and stacktrace {
-    print "We got a string: '$thrownString'"
-    print "We also got a stacktrace\n$stacktrace"
-  } catch anythingElse {
-    print "Something other than a string was thrown: $anythingElse"
+    throwString()
+  } on string catch(thrownString, stacktrace) {
+    print("We got a string: '$thrownString'")
+    print("We also got a stacktrace\n$stacktrace")
+  } catch(anythingElse) {
+    print("Something other than a string was thrown: $anythingElse")
   }
 
-  try
-    -> throwNumber
-  on number get thrownNumber, stacktrace
-    -> void
-  catch anythingElse and stacktrace
-    -> void
+  try {
+    throwNumber()
+  } on number catch(thrownNumber, stacktrace) {}
+  catch (anythingElse, stacktrace) {}
 
 }

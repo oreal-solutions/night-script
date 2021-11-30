@@ -9,49 +9,42 @@
 //
 // If a function uses 'await' it should be async and return a future.
 // If a function is marked 'async' a future object is created when the function is
-// called.
+// called, unless the function returns its own future.
 
-// async def doSomethingHeavy -> future<int>
-// OR
-async def doSomethingHeavy -> int {
+async func doSomethingHeavy(): future<int> {
   let n = 1000000
   while n > 0 {
     --n
   }
 
-  -> 0
+  return 0
 }
 
-def getFuture -> future<string> {
-  // newFuture is understood by the compiler, and creates a new future.
+func getFuture(): future<string> {
+  // future() is understood by the compiler, and creates a new future.
   // i.e it is a language function just like 'function'.
-  final fut = newFuture<string>
+  final fut = future((): string => {
+    // Do all work here.
+    // Errors thrown here will be propagated to the future
+  })
 
-  let run = async -> {
-    // Complete the future with "Hello World!".
-    fut.completeSuccess "Hello World!"
-
-    // If there was error we would have done
-    // fut complete_with_error e
-  }
-
-  run
-  -> fut
+  return fut
 }
 
-async def main {
+async func main() {
   // Await a future
-  await doSomethingHeavy
+  await doSomethingHeavy()
 
   // Use then to postpone execution
   // Note that .then and .onError return the same future
   // and can therefore be chained
-  (doSomethingHeavy.then result -> {
+  doSomethingHeavy().then((result) {
     print "We are done doing heavy, result is $result"
-  }).onError error -> {
-    if error is string
-      -> print "We got string error: $error\n$stacktrace"
-    else
-      -> print "Just a non string error: $error"
-  } 
+  }).onError((error) {
+    if error is string {
+      print "We got string error: $error\n$stacktrace"
+    } else {
+      print "Just a non string error: $error"
+    }
+  })
 }

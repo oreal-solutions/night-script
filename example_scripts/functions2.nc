@@ -7,20 +7,20 @@
 include "nc:math"
 include "nc:collections"
 
-def sumOfDoubleSqrtsOf numbers -> {
-  def doubleSqrtOf x: num -> {
-    -> 2 * sqrt x
+func sumOfDoubleSqrtsOf(numbers) {
+  func doubleSqrtOf(x: num) {
+    return 2 * sqrt(x)
   }
 
-  final out = newEmptyList
+  final out = List.empty()
   for x in numbers {
-    out.add doubleSqrtOf x
+    out.add(doubleSqrtOf(x))
   }
 
-  -> out.reduce 0, (accum, next -> accum += next)
+  return out.reduce(0, (accum, next) => accum += next)
 }
 
-def main {
+func main() {
   final numbers = [4, 16, 25]
-  print "The sum of the doubles of the square roots of $numbers is ${sumOfDoubleSqrtsOf numbers}"
+  print("The sum of the doubles of the square roots of $numbers is ${sumOfDoubleSqrtsOf(numbers)}")
 }

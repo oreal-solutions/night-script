@@ -7,14 +7,18 @@ struct Point {
   y: num,
 }
 
-def Point.isInsideUnitCircle {
-  -> x * x + y * y <= 1
+func Point.isInsideUnitCircle(): boolean {
+  return x * x + y * y <= 1
 }
 
-def zeroPoint {
-  -> Point {x: 0, y: 0}
+func zeroPoint() => Point {
+  x: 0,
+  y: 0
 }
 
-def quadPoint takes w: num -> {
-  -> Point {x: w, y: w}
+func quadPoint(w: num): Point {
+  return Point {
+    x: w,
+    y: w
+  }
 }
