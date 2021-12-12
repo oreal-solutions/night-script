@@ -13,7 +13,7 @@ func timesTwo(x: num): num {
 func timesFour(x: num) => timesTwo(timesTwo(x))
 
 // Functions can be passed to other functions
-func runTwice(x: num, f: ((num): num)): num {
+func runTwice(x: num, f: (num)-> num): num {
   for i = 0, i < 2, i++ {
     x = f(x)
   }
