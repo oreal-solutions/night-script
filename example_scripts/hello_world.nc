@@ -2,6 +2,6 @@
 //
 // The nightScript team
 
-func main() {
-  print("Hello, World!")
+function main() {
+  print("Hello, World!");
 }

@@ -2,38 +2,36 @@
 //
 // The nightScript authors
 
-include "nc:collections"
-
-func isEven(x: num): bool {
+function isEven(x: num): bool {
   // An if-else statement 
   if x % 2 == 0 {
-    return true
+    return true;
   } else {
-    // else can be use an endIf
-    return false
+    return false;
   }
 }
 
 
-func evenNumbersIn(numbers: Iterable<num>): Iterable<num> {
-  let evenNumbers = List.empty()
+function evenNumbersIn(numbers: list<num>): list<num> {
+  let evenNumbers = <num>[];
 
   // A forEach loop
   for i in numbers {
-    // A single line if statement
-    if isEven(i) -> evenNumbers.add(i)
+    if isEven(i) {
+      evenNumbers.add(i);
+    };
   }
 
-  return evenNumbers
+  return evenNumbers;
 }
 
 
 // Main
-func main() {
+function main() {
   // Note that i => i is a lambda function that maps i to itself.
-  let numbers = List.generate(10, (i) => i)
-  print(evenNumbersIn(numbers))
+  let numbers = List.generate(10, (i) => i);
+  print(evenNumbersIn(numbers));
 
-  final x = numbers.length == 10 ? 5:20
-  final a = numbers.length > 5
+  final x = numbers.length == 10 ? 5 : 20;
+  final a = numbers.length > 5;
 }

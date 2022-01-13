@@ -7,6 +7,8 @@ Night Script is a 3d graphics scripting language that is designed to be simple, 
 
 We aim to use Night Script as the scripting language for the Linyard Game Engine, which targets KaiOS devices via JavaScript and mobile devices via C++.
 
+> TODO: Explore the idea of targeting mobile devices via Flutter.
+
 ## Running the parser
 
 First resolve all packages with `pub get`.

@@ -2,28 +2,27 @@
 //
 // The nightScript team
 
-// Watch the use of the command and 'and'.
 
-func throwString() {
-  throw "Throw What?"
+function throwString(): void {
+  throw "Throw What?";
 }
 
-func throwNumber() {
-  throw 42
+function throwNumber(): void {
+  throw 42;
 }
 
-func main() {
+function main(): void {
   try {
-    throwString()
+    throwString(); 
   } on string catch(thrownString, stacktrace) {
-    print("We got a string: '$thrownString'")
-    print("We also got a stacktrace\n$stacktrace")
+    print("We got a string: '$thrownString'");
+    print("We also got a stacktrace\n$stacktrace");
   } catch(anythingElse) {
-    print("Something other than a string was thrown: $anythingElse")
+    print("Something other than a string was thrown: $anythingElse");
   }
 
   try {
-    throwNumber()
+    throwNumber();
   } on number catch(thrownNumber, stacktrace) {}
   catch (anythingElse, stacktrace) {}
 

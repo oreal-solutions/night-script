@@ -3,35 +3,36 @@
 // The nightScript authors
 
 struct CustomCollection<T is Comparable> {
-  final _buffer: List<T>,
+  final _buffer: list<T>;
 }
 
-static func CustomCollection.empty<T is Comparable>(): CustomCollection<T> {
+static function CustomCollection.empty<T is Comparable>(): CustomCollection<T> {
   return {
-    _buffer: List.empty()
+    _buffer: List.empty();
   }
 }
 
-func CustomCollection.add(item: T) {
-  _buffer.add(item)
+function CustomCollection<T is Comparable>.add(item: T) {
+  _buffer.add(item);
 }
 
-func CustomCollection.removeType(of: type) {
-  _buffer.removeWhere(item => item is of)
+// Defaults to CustomCollection<any>
+function CustomCollection.removeType(of: type) {
+  _buffer.removeWhere(item => item is of);
 }
 
-func CustomCollection.toString() => _buffer.toString()
+function CustomCollection.toString() => _buffer.toString();
 
-func main() {
-  let collection = CustomCollection.empty<num>()
+function main() {
+  let collection = CustomCollection.empty<num | int>();
 
-  collection.add(4)
-  collection.add(2.0)
-  collection.add(0.5)
+  collection.add(4);
+  collection.add(2.0);
+  collection.add(0.5);
 
   // Arguments can be named
-  collection.removeType(of: num)
+  collection.removeType(of: num);
 
   // [4]
-  print(collection)
+  print(collection);
 }
