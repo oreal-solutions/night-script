@@ -12,3 +12,5 @@ enum
 future
 
 Stream (provided by the standard library)
+
+Note: All satemenmts are terminated with ;
