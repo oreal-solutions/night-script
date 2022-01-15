@@ -1,5 +1,6 @@
 type
 any
+void
 
 int (i.e 64 bit integers)
 num (i.e double)
