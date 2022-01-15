@@ -7,7 +7,7 @@ Night Script is a 3d graphics scripting language that is designed to be simple, 
 
 We aim to use Night Script as the scripting language for the Linyard Game Engine, which targets KaiOS devices via JavaScript and mobile devices via C++.
 
-> TODO: Explore the idea of targeting mobile devices via Flutter.
+> TODO: Explore the idea of targeting mobile devices via Flutter or Web Assembly.
 
 ## Running the parser
 
@@ -22,7 +22,7 @@ $ dart run night_script "path-to-your-script-file"
 To parse the [hello_world](example_scripts/hello_world.nc) script, for example, run the following command:
 
 ```bash
-$ bash run night_script "example_scripts/hello_world.nc"
+$ dart run night_script "example_scripts/hello_world.nc"
 ```
 
 ## Q: If we don't intepret Night Script, how are we going to implement Flutter-like hot reload in Linyard

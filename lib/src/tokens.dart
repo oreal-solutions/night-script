@@ -54,7 +54,6 @@ enum TokenType {
   importKeyword,
   asKeyword,
   isKeyword,
-  funcKeyword,
   inKeyword,
   ifKeyword,
   elseKeyword,
@@ -96,7 +95,8 @@ enum TokenType {
   dot,
   comma,
   colon,
-  newline, // For some statements, a newline is a terminator
+  newline,
+  semicolon,
   openParenthesis,
   closeParenthesis,
   openSquareBracket,
@@ -135,7 +135,6 @@ enum TokenType {
   opModulusAssign, // %=
 
   // Other operators
-  opYield, // ->
   opIsNot, // is!
 
   // Literals
@@ -152,7 +151,6 @@ final _keywordTokens = {
   'import': TokenType.importKeyword,
   'as': TokenType.asKeyword,
   'is': TokenType.isKeyword,
-  'func': TokenType.funcKeyword,
   'in': TokenType.inKeyword,
   'if': TokenType.ifKeyword,
   'else': TokenType.elseKeyword,
@@ -227,6 +225,7 @@ const _oneCharacterTokens = {
   ',': TokenType.comma,
   ':': TokenType.colon,
   '\n': TokenType.newline,
+  ';': TokenType.semicolon,
   '(': TokenType.openParenthesis,
   ')': TokenType.closeParenthesis,
   '[': TokenType.openSquareBracket,
@@ -273,7 +272,4 @@ const _twoCharacterTokens = {
   '*=': TokenType.opMultiplyAssign,
   '/=': TokenType.opDivideAssign,
   '%=': TokenType.opModulusAssign,
-
-  // Other operators
-  '->': TokenType.opYield,
 };

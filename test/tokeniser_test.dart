@@ -31,10 +31,10 @@ void main() {
       });
 
       test('Should tokenise keywords and symbols literally', () {
-        final source = 'func ==';
+        final source = 'function ==';
         final expectedTokens = [
-          Token(0, 'func', TokenType.funcKeyword),
-          Token(5, '==', TokenType.opEqualTo),
+          Token(0, 'function', TokenType.functionKeyword),
+          Token(9, '==', TokenType.opEqualTo),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
