@@ -8,31 +8,33 @@ abstract class Tokeniser {
   List<Token> tokenise(String source);
 
   /// A list of all the symbols not matched to a recognised token.
-  List<Token> get unknownSymbols;
+  Iterable<Token> get unknownSymbols;
 
   factory Tokeniser() = _Tokeniser;
 }
 
 class _Tokeniser implements Tokeniser {
+  final List<Token> allTokens = [];
+
   @override
-  List<Token> unknownSymbols = [];
+  Iterable<Token> get unknownSymbols =>
+      allTokens.where((token) => token.type == TokenType.unknown);
 
   @override
   List<Token> tokenise(String source) {
     var stringTypeWeCurrentlyIn = _CurrentStringType.NONE;
     var commentTypeWeCurrentlyIn = _CurrentCommentType.NONE;
     var stagedCharacters = StringBuffer();
-    final out = <Token>[];
 
     int startIndexOfNextToken() {
-      if (out.isEmpty) return 0;
-      return out.last.endIndex;
+      if (allTokens.isEmpty) return 0;
+      return allTokens.last.endIndex;
     }
 
     void terminateStagedCharactersAsStringLiteral() {
       stringTypeWeCurrentlyIn = _CurrentStringType.NONE;
-      out.add(
-        Token(startIndexOfNextToken(), stagedCharacters.toString(),
+      allTokens.add(
+        Token(startIndexOfNextToken(), -1, stagedCharacters.toString(),
             TokenType.stringLiteral),
       );
 
@@ -78,9 +80,10 @@ class _Tokeniser implements Tokeniser {
           if (char == '\n') removeLastStagedCharacter();
 
           // Comment is being terminated
-          out.add(
+          allTokens.add(
             Token(
               startIndexOfNextToken(),
+              -1,
               stagedCharacters.toString(),
               commentTypeWeCurrentlyIn ==
                       _CurrentCommentType.SINGLE_LINE_COMMENT
@@ -101,13 +104,13 @@ class _Tokeniser implements Tokeniser {
             source.nextTwoCharsAfterIndexEqual('""', iii)) {
           // Beginning of multiline string
           removeLastStagedCharacter();
-          tokeniseStagedCharactersAndClearThem(out);
+          tokeniseStagedCharactersAndClearThem(allTokens);
           stagedCharacters.write(char);
           stringTypeWeCurrentlyIn = _CurrentStringType.MULTILINE;
         } else {
           // Beginning of single line string
           removeLastStagedCharacter();
-          tokeniseStagedCharactersAndClearThem(out);
+          tokeniseStagedCharactersAndClearThem(allTokens);
           stagedCharacters.write(char);
           stringTypeWeCurrentlyIn = _CurrentStringType.SINGLE_LINE;
         }
@@ -116,7 +119,7 @@ class _Tokeniser implements Tokeniser {
             source.nextTwoCharsAfterIndexEqual('//', iii)) {
           // Beginning of doc comment
           removeLastStagedCharacter();
-          tokeniseStagedCharactersAndClearThem(out);
+          tokeniseStagedCharactersAndClearThem(allTokens);
           commentTypeWeCurrentlyIn = _CurrentCommentType.MULTILINE_COMMENT;
           stagedCharacters.write(char + source.nextTwoCharsAfterIndex(iii));
           iii += 2; // Skip the next two characters
@@ -124,7 +127,7 @@ class _Tokeniser implements Tokeniser {
             source.nextCharAfterIndexEquals('/', iii)) {
           // Beginning of line comment
           removeLastStagedCharacter();
-          tokeniseStagedCharactersAndClearThem(out);
+          tokeniseStagedCharactersAndClearThem(allTokens);
           commentTypeWeCurrentlyIn = _CurrentCommentType.SINGLE_LINE_COMMENT;
           stagedCharacters.write(char + source.nextCharAfterIndex(iii));
           iii += 1; // Skip next character
@@ -132,8 +135,17 @@ class _Tokeniser implements Tokeniser {
       }
     }
 
-    tokeniseStagedCharactersAndClearThem(out);
-    return out;
+    tokeniseStagedCharactersAndClearThem(allTokens);
+
+    var lineNumber = 1;
+    return allTokens.map((token) {
+      token.setComputedLineNumber(lineNumber);
+      if (token.type == TokenType.newline) {
+        lineNumber++;
+      }
+
+      return token;
+    }).toList();
   }
 
   List<Token> tokeniseRecursively(int startIndexOffset, String leg) {
@@ -162,6 +174,7 @@ class _Tokeniser implements Tokeniser {
 
         foundToken = Token(
           foundTokenStartIndexInLeg + startIndexOffset,
+          -1,
           tokenData,
           tokenType,
         );
@@ -174,8 +187,7 @@ class _Tokeniser implements Tokeniser {
       // The leg is not empty but no lexeme matcher matches. So we match
       // the symbols character by character, which should be faster than using
       // regexp.
-      return tokeniseOneAndTwoCharacterLexemes(
-          startIndexOffset, leg, unknownSymbols);
+      return tokeniseOneAndTwoCharacterLexemes(startIndexOffset, leg);
     }
 
     final leftLeg = leg.substring(0, foundTokenStartIndexInLeg);
@@ -189,7 +201,7 @@ class _Tokeniser implements Tokeniser {
   }
 
   List<Token> tokeniseOneAndTwoCharacterLexemes(
-      int startIndexOffset, String leg, List<Token> unknownSymbolsOut) {
+      int startIndexOffset, String leg) {
     final out = <Token>[];
     for (var iii = 0; iii < leg.length; iii++) {
       final char = leg[iii];
@@ -225,10 +237,9 @@ class _Tokeniser implements Tokeniser {
       }
 
       if (match == null) {
-        unknownSymbolsOut
-            .add(Token(startIndexOffset + iii, char, TokenType.unknown));
+        out.add(Token(startIndexOffset + iii, -1, char, TokenType.unknown));
       } else {
-        out.add(Token(matchStartIndex, match.key, match.value));
+        out.add(Token(matchStartIndex, -1, match.key, match.value));
       }
     }
 

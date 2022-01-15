@@ -16,15 +16,15 @@ void main() {
       test('Should capture the correct starting indices for tokens', () {
         final source = ' 56>=\n"myString"\ntype\nany\n';
         final expectedTokens = [
-          Token(1, '56', TokenType.integerLiteral),
-          Token(3, '>=', TokenType.opGreaterThanOrEqualTo),
-          Token(5, '\n', TokenType.newline),
-          Token(6, '"myString"', TokenType.stringLiteral),
-          Token(16, '\n', TokenType.newline),
-          Token(17, 'type', TokenType.typeKeyword),
-          Token(21, '\n', TokenType.newline),
-          Token(22, 'any', TokenType.anyKeyword),
-          Token(25, '\n', TokenType.newline),
+          Token(1, 1, '56', TokenType.integerLiteral),
+          Token(3, 1, '>=', TokenType.opGreaterThanOrEqualTo),
+          Token(5, 1, '\n', TokenType.newline),
+          Token(6, 2, '"myString"', TokenType.stringLiteral),
+          Token(16, 2, '\n', TokenType.newline),
+          Token(17, 3, 'type', TokenType.typeKeyword),
+          Token(21, 3, '\n', TokenType.newline),
+          Token(22, 4, 'any', TokenType.anyKeyword),
+          Token(25, 4, '\n', TokenType.newline),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -33,8 +33,8 @@ void main() {
       test('Should tokenise keywords and symbols literally', () {
         final source = 'function ==';
         final expectedTokens = [
-          Token(0, 'function', TokenType.functionKeyword),
-          Token(9, '==', TokenType.opEqualTo),
+          Token(0, 1, 'function', TokenType.functionKeyword),
+          Token(9, 1, '==', TokenType.opEqualTo),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -43,7 +43,7 @@ void main() {
       test('Should not capture keywords that are part of a word', () {
         final source = 'oh_import_here';
         final expectedTokens = [
-          Token(0, 'oh_import_here', TokenType.identifier),
+          Token(0, 1, 'oh_import_here', TokenType.identifier),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -53,7 +53,7 @@ void main() {
         final source =
             '"This is a string, // with a comment here and /// another comment here"';
         final expectedTokens = [
-          Token(0, source, TokenType.stringLiteral),
+          Token(0, 1, source, TokenType.stringLiteral),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -64,12 +64,13 @@ void main() {
           () {
         final source = '"abc\n';
         final unknownSymbols = [
-          Token(0, '"', TokenType.unknown),
+          Token(0, 1, '"', TokenType.unknown),
         ];
 
         final expectedTokens = [
-          Token(1, 'abc', TokenType.identifier),
-          Token(4, '\n', TokenType.newline),
+          ...unknownSymbols,
+          Token(1, 1, 'abc', TokenType.identifier),
+          Token(4, 1, '\n', TokenType.newline),
         ];
 
         final returnedTokens = instance.tokenise(source);
@@ -77,11 +78,22 @@ void main() {
         expect(returnedTokens, expectedTokens);
       });
 
+      test(r'Given "#\n¢" should return correct unknown tokens', () {
+        final source = '#\n¢';
+        final unknownSymbols = [
+          Token(0, 1, '#', TokenType.unknown),
+          Token(2, 2, '¢', TokenType.unknown),
+        ];
+
+        instance.tokenise(source);
+        expect(instance.unknownSymbols, unknownSymbols);
+      });
+
       test('Should recognise multiline strings with comments', () {
         final source =
             '"""This is a string, \n // with a comment here and \n /// another comment here"""';
         final expectedTokens = [
-          Token(0, source, TokenType.stringLiteral),
+          Token(0, 1, source, TokenType.stringLiteral),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -91,7 +103,7 @@ void main() {
         final source =
             '// This is a comment "with string here" and """another string here"""';
         final expectedTokens = [
-          Token(0, source, TokenType.lineComment),
+          Token(0, 1, source, TokenType.lineComment),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -100,9 +112,9 @@ void main() {
       test('Should terminate comments by newline and EOF', () {
         final source = '//abc\n//func';
         final expectedTokens = [
-          Token(0, '//abc', TokenType.lineComment),
-          Token(5, '\n', TokenType.newline),
-          Token(6, '//func', TokenType.lineComment),
+          Token(0, 1, '//abc', TokenType.lineComment),
+          Token(5, 1, '\n', TokenType.newline),
+          Token(6, 2, '//func', TokenType.lineComment),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -112,7 +124,7 @@ void main() {
         final source =
             '/// This is a comment "with string here" and """another string here"""';
         final expectedTokens = [
-          Token(0, source, TokenType.docComment),
+          Token(0, 1, source, TokenType.docComment),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -121,7 +133,7 @@ void main() {
       test('Should identify decimals as numbers', () {
         final source = '0.5';
         final expectedTokens = [
-          Token(0, '0.5', TokenType.numberLiteral),
+          Token(0, 1, '0.5', TokenType.numberLiteral),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -130,7 +142,7 @@ void main() {
       test('Should identify decimals with E as numbers', () {
         final source = '0.5E3';
         final expectedTokens = [
-          Token(0, '0.5E3', TokenType.numberLiteral),
+          Token(0, 1, '0.5E3', TokenType.numberLiteral),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -139,7 +151,7 @@ void main() {
       test('Should identify positive integers', () {
         final source = '967';
         final expectedTokens = [
-          Token(0, '967', TokenType.integerLiteral),
+          Token(0, 1, '967', TokenType.integerLiteral),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -148,7 +160,7 @@ void main() {
       test('Should identify positive hexadecimal integers', () {
         final source = '0xFF';
         final expectedTokens = [
-          Token(0, '0xFF', TokenType.integerLiteral),
+          Token(0, 1, '0xFF', TokenType.integerLiteral),
         ];
 
         expect(instance.tokenise(source), expectedTokens);
@@ -159,7 +171,7 @@ void main() {
           () {
         final source = 'Vector3';
         final expectedTokens = [
-          Token(0, 'Vector3', TokenType.identifier),
+          Token(0, 1, 'Vector3', TokenType.identifier),
         ];
 
         expect(instance.tokenise(source), expectedTokens);

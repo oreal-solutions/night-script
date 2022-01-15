@@ -24,10 +24,16 @@ class Token {
   /// The string this token was passed from in the source file.
   final String data;
 
+  int lineNumber;
+
   final TokenType type;
 
-  Token(this.startIndex, this.data, this.type)
+  Token(this.startIndex, this.lineNumber, this.data, this.type)
       : endIndex = startIndex + data.length;
+
+  void setComputedLineNumber(int value) {
+    lineNumber = value;
+  }
 
   @override
   bool operator ==(other) {
@@ -35,6 +41,7 @@ class Token {
         other.startIndex == startIndex &&
         other.endIndex == endIndex &&
         other.data == data &&
+        other.lineNumber == lineNumber &&
         other.type == type;
   }
 
@@ -43,7 +50,8 @@ class Token {
       startIndex.hashCode ^ data.hashCode ^ type.hashCode ^ endIndex.hashCode;
 
   @override
-  String toString() => '($type, $data, @$startIndex-$endIndex)';
+  String toString() =>
+      '($type, $data, @$startIndex-$endIndex line $lineNumber)';
 }
 
 enum TokenType {
@@ -136,6 +144,7 @@ enum TokenType {
 
   // Other operators
   opIsNot, // is!
+  dataTypeOr, // |
 
   // Literals
   stringLiteral, // single line or multi line string with quotes
@@ -249,6 +258,9 @@ const _oneCharacterTokens = {
 
   // Assignment operators
   '=': TokenType.opAssign,
+
+  // Other operators
+  '|': TokenType.dataTypeOr,
 };
 
 const _twoCharacterTokens = {
