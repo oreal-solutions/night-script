@@ -7,7 +7,7 @@ struct Boolean {
 }
 
 // An initialiser. A data type can only have one initialiser.
-function Boolean.(value: string) {
+function Boolean(value: string) {
   this.value = value.toLowerCase() == "true";
 }
 
